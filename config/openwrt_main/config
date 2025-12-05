@@ -1,87 +1,41 @@
 # =========================================================
-# OpenWrt Target Options (N1/Amlogic S905D)
+# 1. Target Architecture (N1 / Amlogic S905D)
 # =========================================================
 CONFIG_TARGET_armsr=y
 CONFIG_TARGET_armsr_armv8=y
 CONFIG_TARGET_armsr_armv8_DEVICE_generic=y
 CONFIG_TARGET_ROOTFS_TARGZ=y
+# 开启 ARMv8 Crypto 硬件加速 (对科学上网速度至关重要)
+CONFIG_PACKAGE_kmod-crypto-acompress=y
+CONFIG_PACKAGE_kmod-crypto-aead=y
+CONFIG_PACKAGE_kmod-crypto-authenc=y
+CONFIG_PACKAGE_kmod-crypto-crc32c=y
+CONFIG_PACKAGE_kmod-crypto-hash=y
+CONFIG_PACKAGE_kmod-crypto-manager=y
+CONFIG_PACKAGE_kmod-crypto-null=y
+CONFIG_PACKAGE_kmod-crypto-sha1=y
+CONFIG_PACKAGE_kmod-crypto-sha256=y
+CONFIG_PACKAGE_kmod-crypto-user=y
+CONFIG_PACKAGE_kmod-cryptodev=y
 
 # =========================================================
-# 1. Amlogic Box Specific (晶晨盒子插件)
+# 2. System Utilities (写入EMMC和系统管理必须)
 # =========================================================
-CONFIG_PACKAGE_luci-app-amlogic=y
-CONFIG_PACKAGE_luci-i18n-amlogic-zh-cn=y
-
-# =========================================================
-# 2. Proxy & VPN Plugins (科学上网与内网穿透)
-# =========================================================
-# Passwall
-CONFIG_PACKAGE_luci-app-passwall=y
-CONFIG_PACKAGE_luci-i18n-passwall-zh-cn=y
-# OpenClash
-CONFIG_PACKAGE_luci-app-openclash=y
-CONFIG_PACKAGE_luci-i18n-openclash-zh-cn=y
-# ZeroTier
-CONFIG_PACKAGE_luci-app-zerotier=y
-CONFIG_PACKAGE_luci-i18n-zerotier-zh-cn=y
-# Tailscale
-CONFIG_PACKAGE_tailscale=y
-CONFIG_PACKAGE_luci-app-tailscale=y
-CONFIG_PACKAGE_luci-i18n-tailscale-zh-cn=y
-
-# =========================================================
-# 3. Network Acceleration (Turbo ACC)
-# =========================================================
-CONFIG_PACKAGE_luci-app-turboacc=y
-CONFIG_PACKAGE_luci-i18n-turboacc-zh-cn=y
-# Dependencies for offloading (BBR, NFT)
-CONFIG_PACKAGE_kmod-tcp-bbr=y
-CONFIG_PACKAGE_kmod-nft-offload=y
-
-# =========================================================
-# 4. NAS & File Sharing (Samba4)
-# =========================================================
-CONFIG_PACKAGE_luci-app-samba4=y
-CONFIG_PACKAGE_luci-i18n-samba4-zh-cn=y
-CONFIG_PACKAGE_samba4-server=y
-CONFIG_PACKAGE_samba4-libs=y
-CONFIG_PACKAGE_samba4-utils=y
-
-# =========================================================
-# 5. System Utilities (TTYD, DDNS, etc.)
-# =========================================================
-# TTYD Terminal
-CONFIG_PACKAGE_luci-app-ttyd=y
-CONFIG_PACKAGE_luci-i18n-ttyd-zh-cn=y
-# DDNS
-CONFIG_PACKAGE_luci-app-ddns=y
-CONFIG_PACKAGE_luci-i18n-ddns-zh-cn=y
-CONFIG_PACKAGE_ddns-scripts_aliyun=y
-CONFIG_PACKAGE_ddns-scripts_dnspod=y
-
-# =========================================================
-# 6. Essential Base System & Firmware (基础依赖与固件)
-# =========================================================
-# LuCI Web Interface
-CONFIG_PACKAGE_luci=y
-CONFIG_PACKAGE_luci-base=y
-CONFIG_PACKAGE_luci-compat=y
-CONFIG_PACKAGE_luci-light=y
-
-# Language Support
-CONFIG_LUCI_LANG_zh_Hans=y
-
-# Wireless Firmware for N1 (Broadcom)
-CONFIG_PACKAGE_brcmfmac-firmware-4329-sdio=y
-CONFIG_PACKAGE_brcmfmac-firmware-43430a0-sdio=y
-CONFIG_PACKAGE_brcmfmac-firmware-43455-sdio=y
-CONFIG_PACKAGE_brcmfmac-firmware-usb=y
-CONFIG_PACKAGE_kmod-brcmfmac=y
-CONFIG_PACKAGE_kmod-brcmutil=y
-CONFIG_PACKAGE_kmod-cfg80211=y
-CONFIG_PACKAGE_kmod-mac80211=y
-
-# Utilities
+# 晶晨宝盒(luci-app-amlogic) 依赖以下分区和挂载工具，务必保留
+CONFIG_PACKAGE_blkid=y
+CONFIG_PACKAGE_fdisk=y
+CONFIG_PACKAGE_lsblk=y
+CONFIG_PACKAGE_parted=y
+CONFIG_PACKAGE_losetup=y
+CONFIG_PACKAGE_resize2fs=y
+CONFIG_PACKAGE_e2fsprogs=y
+CONFIG_PACKAGE_block-mount=y
+CONFIG_PACKAGE_fstools=y
+# 常用压缩解压工具
+CONFIG_PACKAGE_gzip=y
+CONFIG_PACKAGE_unzip=y
+CONFIG_PACKAGE_tar=y
+# 基础系统工具
 CONFIG_PACKAGE_curl=y
 CONFIG_PACKAGE_wget-ssl=y
 CONFIG_PACKAGE_htop=y
@@ -91,10 +45,127 @@ CONFIG_PACKAGE_openssl-util=y
 CONFIG_PACKAGE_ca-bundle=y
 CONFIG_PACKAGE_ca-certificates=y
 
-# Coreutils (often needed by OpenClash)
-CONFIG_PACKAGE_coreutils=y
-CONFIG_PACKAGE_coreutils-nohup=y
-CONFIG_PACKAGE_coreutils-base64=y
+# =========================================================
+# 3. Hardware Drivers (USB, Disk, Network, WiFi)
+# =========================================================
+# USB 基础驱动
+CONFIG_PACKAGE_kmod-usb2=y
+CONFIG_PACKAGE_kmod-usb3=y
+CONFIG_PACKAGE_kmod-usb-storage=y
+CONFIG_PACKAGE_kmod-usb-storage-extras=y
+CONFIG_PACKAGE_kmod-usb-storage-uas=y
+CONFIG_PACKAGE_kmod-usb-hid=y
 
-# Enable IPv6
+# 文件系统支持 (挂载移动硬盘/U盘)
+CONFIG_PACKAGE_kmod-fs-vfat=y
+CONFIG_PACKAGE_kmod-fs-exfat=y
+CONFIG_PACKAGE_kmod-fs-ext4=y
+CONFIG_PACKAGE_kmod-fs-ntfs3=y
+CONFIG_PACKAGE_kmod-nls-utf8=y
+
+# N1 WiFi 驱动 (Broadcom)
+CONFIG_PACKAGE_kmod-brcmfmac=y
+CONFIG_PACKAGE_kmod-brcmutil=y
+CONFIG_PACKAGE_kmod-cfg80211=y
+CONFIG_PACKAGE_kmod-mac80211=y
+# N1 固件文件 (根据原配置保留，packit脚本通常也会注入，选上双保险)
+CONFIG_PACKAGE_brcmfmac-firmware-4329-sdio=y
+CONFIG_PACKAGE_brcmfmac-firmware-43430a0-sdio=y
+CONFIG_PACKAGE_brcmfmac-firmware-43455-sdio=y
+CONFIG_PACKAGE_brcmfmac-firmware-usb=y
+
+# USB 网卡驱动 (N1做单臂路由或旁路由时的扩展)
+CONFIG_PACKAGE_kmod-usb-net-rtl8152=y
+CONFIG_PACKAGE_kmod-usb-net-asix=y
+CONFIG_PACKAGE_kmod-usb-net-asix-ax88179=y
+
+# =========================================================
+# 4. Plugins: Amlogic & NAS
+# =========================================================
+# 晶晨宝盒
+CONFIG_PACKAGE_luci-app-amlogic=y
+CONFIG_PACKAGE_luci-i18n-amlogic-zh-cn=y
+
+# Samba4 网络共享 (包含自动发现组件 wsdd2/avahi)
+CONFIG_PACKAGE_luci-app-samba4=y
+CONFIG_PACKAGE_luci-i18n-samba4-zh-cn=y
+CONFIG_PACKAGE_samba4-server=y
+CONFIG_PACKAGE_samba4-libs=y
+CONFIG_PACKAGE_samba4-utils=y
+CONFIG_PACKAGE_wsdd2=y
+CONFIG_PACKAGE_avahi-dbus-daemon=y
+CONFIG_PACKAGE_attr=y
+
+# =========================================================
+# 5. Plugins: Proxy & VPN
+# =========================================================
+# Passwall
+CONFIG_PACKAGE_luci-app-passwall=y
+CONFIG_PACKAGE_luci-i18n-passwall-zh-cn=y
+CONFIG_PACKAGE_ipt2socks=y
+CONFIG_PACKAGE_dns2socks=y
+CONFIG_PACKAGE_pdnsd-alt=y
+CONFIG_PACKAGE_chinadns-ng=y
+# 确保 Passwall 所需的依赖被选中
+CONFIG_PACKAGE_kmod-nft-nat=y
+CONFIG_PACKAGE_kmod-nft-tproxy=y
+CONFIG_PACKAGE_kmod-nft-socket=y
+
+# OpenClash
+CONFIG_PACKAGE_luci-app-openclash=y
+CONFIG_PACKAGE_luci-i18n-openclash-zh-cn=y
+CONFIG_PACKAGE_coreutils-nohup=y
+CONFIG_PACKAGE_libcap=y
+CONFIG_PACKAGE_libcap-bin=y
+CONFIG_PACKAGE_ruby=y
+CONFIG_PACKAGE_ruby-yaml=y
+
+# ZeroTier
+CONFIG_PACKAGE_luci-app-zerotier=y
+CONFIG_PACKAGE_luci-i18n-zerotier-zh-cn=y
+
+# Tailscale
+CONFIG_PACKAGE_tailscale=y
+CONFIG_PACKAGE_luci-app-tailscale=y
+CONFIG_PACKAGE_luci-i18n-tailscale-zh-cn=y
+CONFIG_PACKAGE_iptables-nft=y
+
+# =========================================================
+# 6. Plugins: Acceleration & Utilities
+# =========================================================
+# Turbo ACC
+CONFIG_PACKAGE_luci-app-turboacc=y
+CONFIG_PACKAGE_luci-i18n-turboacc-zh-cn=y
+CONFIG_PACKAGE_kmod-tcp-bbr=y
+CONFIG_PACKAGE_kmod-nft-offload=y
+
+# TTYD 终端
+CONFIG_PACKAGE_luci-app-ttyd=y
+CONFIG_PACKAGE_luci-i18n-ttyd-zh-cn=y
+
+# DDNS 动态域名
+CONFIG_PACKAGE_luci-app-ddns=y
+CONFIG_PACKAGE_luci-i18n-ddns-zh-cn=y
+CONFIG_PACKAGE_ddns-scripts_aliyun=y
+CONFIG_PACKAGE_ddns-scripts_dnspod=y
+
+# Docker (N1 性能尚可，通常建议保留 Docker)
+CONFIG_PACKAGE_luci-app-dockerman=y
+CONFIG_PACKAGE_luci-i18n-dockerman-zh-cn=y
+CONFIG_PACKAGE_docker=y
+CONFIG_PACKAGE_dockerd=y
+
+# =========================================================
+# 7. Basic Interface (LuCI)
+# =========================================================
+CONFIG_PACKAGE_luci=y
+CONFIG_PACKAGE_luci-base=y
+CONFIG_PACKAGE_luci-compat=y
+CONFIG_PACKAGE_luci-light=y
+CONFIG_LUCI_LANG_zh_Hans=y
+CONFIG_PACKAGE_luci-theme-bootstrap=y
+# 建议加上 Argon 主题 (好看一些，可选)
+# CONFIG_PACKAGE_luci-theme-argon is not set
+
+# IPv6 支持
 CONFIG_IPV6=y
