@@ -6,25 +6,24 @@
 # Source code repository: https://github.com/openwrt/openwrt / Branch: main
 #========================================================================================================================
 
-# Add a feed source
-# sed -i '$a src-git lienol https://github.com/Lienol/openwrt-package' feeds.conf.default
+# --- 1. Passwall (直克隆模式，修复 feeds 报错) ---
+# 下载依赖
+git clone --depth 1 https://github.com/xiaorouji/openwrt-passwall.git -b packages package/passwall_packages
+# 下载主程序
+git clone --depth 1 https://github.com/xiaorouji/openwrt-passwall.git -b luci package/passwall_luci
 
-# other
-# rm -rf package/utils/{ucode,fbtest}
-
-#!/bin/bash
-# 必装: Passwall
-echo "src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall;packages" >> feeds.conf.default
-echo "src-git passwall_luci https://github.com/xiaorouji/openwrt-passwall;luci" >> feeds.conf.default
-
-# 必装: OpenClash
+# --- 2. OpenClash ---
 git clone --depth 1 https://github.com/vernesong/OpenClash.git package/luci-app-openclash
 
-# 必装: TurboACC
+# --- 3. Turbo ACC 网络加速 ---
 git clone --depth 1 https://github.com/chenmozhijian/luci-app-turboacc.git package/luci-app-turboacc
 
-# 必装: Tailscale (界面)
+# --- 4. Tailscale (界面) ---
 git clone --depth 1 https://github.com/asvow/luci-app-tailscale.git package/luci-app-tailscale
 
-# 可选: Argon 主题 (N1 常用主题)
-git clone --depth 1 https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
+# --- 5. 确保 ZeroTier 存在 (官方源通常已有，这里作为保险可不加，或使用直克隆) ---
+# git clone --depth 1 https://github.com/mchome/openwrt-vlmcsd.git package/vlmcsd
+# git clone --depth 1 https://github.com/rufengsuixing/luci-app-zerotier.git package/luci-app-zerotier
+
+# --- 6. 修正可能存在的重复包 (可选，视情况而定) ---
+# rm -rf package/feeds/luci/luci-app-passwall
