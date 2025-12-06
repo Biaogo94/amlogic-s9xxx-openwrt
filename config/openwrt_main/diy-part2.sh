@@ -36,5 +36,17 @@ git clone https://github.com/ophub/luci-app-amlogic.git package/luci-app-amlogic
 #
 # Apply patch
 # git apply ../config/patches/{0001*,0002*}.patch --directory=feeds/luci
+
+# =========================================================
+# Fix Rust Compilation on GitHub Actions
+# =========================================================
+# Error: `llvm.download-ci-llvm` cannot be set to `true` on CI.
+# Description: Modify the config generation in Rust Makefile to use "if-unchanged"
+# ---------------------------------------------------------
+rust_makefile="feeds/packages/lang/rust/Makefile"
+if [ -f "$rust_makefile" ]; then
+    echo "Applying Rust CI fix..."
+    sed -i 's/download-ci-llvm = true/download-ci-llvm = "if-unchanged"/g' "$rust_makefile"
+fi
 #
 # ------------------------------- Other ends -------------------------------
